@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>coretrace — HPC Infrastructure Sourcing & Advisory</title>
+    <meta name="description" content="coretrace — Independent HPC infrastructure sourcing and advisory for data centre operators and enterprises.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg-subtle: #0e0e14;
+            --surface: #14141e;
+            --border: #1e1e2e;
+            --text-primary: #e8e8ec;
+            --text-secondary: #6b6b7b;
+            --text-muted: #3a3a4a;
+            --accent: #2dd4a8;
+            --accent-dim: #1a8a6e;
+            --accent-glow: rgba(45, 212, 168, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ── Grid background ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.25;
+            mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 20%, transparent 70%);
+            -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 20%, transparent 70%);
+            z-index: 0;
+        }
+
+        /* ── Subtle glow ── */
+        body::after {
+            content: '';
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            text-align: left;
+            padding: 2rem;
+            max-width: 620px;
+        }
+
+        /* ── Status indicator ── */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 400;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeUp 0.8s ease-out 0.3s forwards;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+
+        /* ── Brand ── */
+        .brand {
+            font-size: 3.8rem;
+            font-weight: 300;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            margin-bottom: 1.2rem;
+            opacity: 0;
+            animation: fadeUp 0.8s ease-out 0.5s forwards;
+        }
+
+        .brand span {
+            color: var(--accent);
+        }
+
+        /* ── Tagline ── */
+        .tagline {
+            font-size: 1.05rem;
+            font-weight: 300;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 3rem;
+            max-width: 480px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease-out 0.7s forwards;
+        }
+
+        /* ── Divider ── */
+        .divider {
+            width: 40px;
+            height: 1px;
+            background: var(--accent-dim);
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: fadeUp 0.8s ease-out 0.9s forwards;
+        }
+
+        /* ── Contact ── */
+        .contact {
+            opacity: 0;
+            animation: fadeUp 0.8s ease-out 1.1s forwards;
+        }
+
+        .contact-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            font-weight: 400;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.7rem;
+        }
+
+        .contact a {
+            font-size: 0.95rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 2px;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .contact a:hover {
+            color: var(--accent);
+            border-color: var(--accent-dim);
+        }
+
+        /* ── Footer ── */
+        .footer {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            opacity: 0;
+            animation: fadeUp 0.8s ease-out 1.4s forwards;
+        }
+
+        .footer-right {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            opacity: 0;
+            animation: fadeUp 0.8s ease-out 1.4s forwards;
+        }
+
+        /* ── Animations ── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 640px) {
+            .brand {
+                font-size: 2.6rem;
+            }
+
+            .tagline {
+                font-size: 0.95rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+
+            .footer, .footer-right {
+                bottom: 1.2rem;
+                left: 1.5rem;
+                right: 1.5rem;
+            }
+
+            .footer-right {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="status">
+            <div class="status-dot"></div>
+            Initialising
+        </div>
+
+        <h1 class="brand">core<span>trace</span></h1>
+
+        <p class="tagline">
+            HPC infrastructure sourcing & advisory. Independent procurement consulting for data centre operators and enterprises.
+        </p>
+
+        <div class="divider"></div>
+
+        <div class="contact">
+            <div class="contact-label">Get in touch</div>
+            <a href="mailto:jonathan.pernice@coretrace.uk">jonatha.pernice@coretrace.uk</a>
+        </div>
+    </div>
+
+    <div class="footer">London &middot; UK</div>
+    <div class="footer-right">&copy; 2026 coretrace</div>
+</body>
+</html>
